@@ -32,11 +32,11 @@ namespace TARpe19TodoApp.Controllers
         [AllowAnonymous]
         public async Task<List<GetUserResponse>> GetUser()
         {
-            var users = await _context.Users.ToListAsync();
-
+            var users = await _context.Users.Include(u=> u.Contacts).ThenInclude(c=> c.ContactType).ToListAsync();
+            var result = users.ConvertAll(u => ConvertToDto(u));
 
             //return  await _context.Users.ToListAsync();
-            return users;
+            return result;
             
         }
 
@@ -129,7 +129,7 @@ namespace TARpe19TodoApp.Controllers
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, ConvertToDto(user));
             }
 
 
