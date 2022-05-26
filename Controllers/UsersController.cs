@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TARpe19TodoApp.Data;
 using TARpe19TodoApp.Models;
+using TARpe19TodoApp.Models.Dto;
 
 namespace TARpe19TodoApp.Controllers
 {
@@ -81,7 +82,7 @@ namespace TARpe19TodoApp.Controllers
 
         // POST: api/Kasutajas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             if (ModelState.IsValid) { 
@@ -93,6 +94,42 @@ namespace TARpe19TodoApp.Controllers
 
             return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
         }
+        */
+        // POST: api/Kasutajas
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(NewUserDto userdto)
+        {
+            if (ModelState.IsValid)
+            {
+                var contacttype = await _context.ContactTypes.FirstOrDefaultAsync(u => u.Id == userdto.ContactTypeId);
+
+                if (contacttype == null)
+                {
+
+                    return NotFound();
+                }
+
+                var user = new User();
+                user.firstName = userdto.firstName;
+                user.lastName = userdto.lastName;
+                var contact = new Contact();
+                contact.Value = userdto.ContactValue;
+                contact.ContactType = contacttype;
+
+                user.Contacts = new List<Contact>();
+                user.Contacts.Add(contact);
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            }
+
+
+            return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
+        }
+
 
         // DELETE: api/Kasutajas/5
         [HttpDelete("{id}")]
