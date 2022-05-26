@@ -164,9 +164,23 @@ namespace TARpe19TodoApp.Controllers
 
         private GetUserResponse ConvertToDto(User user)
         {
-            var result =
+            var result = new GetUserResponse();
+            result.UserId = user.Id;
+            result.FirstName = user.firstName;
+            result.LastName = user.lastName;
 
-                return result;
+            result.Contacts = new List<ContactResponse>();
+            foreach (var contact in user.Contacts)
+            {
+                var resultContact = new ContactResponse();
+                resultContact.Id = contact.Id;
+                resultContact.ContactType = contact.ContactType.Type;
+                resultContact.Value = contact.Value;
+
+                result.Contacts.Add(resultContact);
+            }
+
+            return result;
         }
     }
 }
