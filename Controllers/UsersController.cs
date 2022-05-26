@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using TARpe19TodoApp.Data;
 using TARpe19TodoApp.Models;
 using TARpe19TodoApp.Models.Dto;
+using TARpe19TodoApp.Models.Dto.Response;
 
 namespace TARpe19TodoApp.Controllers
 {
@@ -29,9 +30,14 @@ namespace TARpe19TodoApp.Controllers
         // GET: api/Kasutajas
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<List<GetUserResponse>> GetUser()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+
+
+            //return  await _context.Users.ToListAsync();
+            return users;
+            
         }
 
         // GET: api/Kasutajas/5
@@ -154,6 +160,13 @@ namespace TARpe19TodoApp.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        private GetUserResponse ConvertToDto(User user)
+        {
+            var result =
+
+                return result;
         }
     }
 }
