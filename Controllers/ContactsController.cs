@@ -101,6 +101,14 @@ namespace TARpe19TodoApp.Controllers
                     return NotFound();
                 }
 
+                var contact = new Contact();
+                contact.User = user;
+                contact.ContactType = contacttype;
+                contact.Value = contactdto.ContactValue;
+
+                _context.Contacts.Add(contact);
+                await _context.SaveChangesAsync();
+
                 return CreatedAtAction(nameof(GetContact), new { id = contact.Id });
             }
 
