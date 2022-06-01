@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TARpe19TodoApp.Data;
 using TARpe19TodoApp.Models;
+using TARpe19TodoApp.Models.Dto;
 
 namespace TARpe19TodoApp.Controllers
 {
@@ -80,17 +81,31 @@ namespace TARpe19TodoApp.Controllers
         // POST: api/Kontakts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Contact>> PostContact(Contact contact)
+        public async Task<ActionResult<Contact>> PostContact(NewContactDto contactdto)
         {
             if (ModelState.IsValid)
             {
-                _context.Contacts.Add(contact);
-                await _context.SaveChangesAsync();
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == contactdto.UserId);
 
-                return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
+                if (user == null)
+                {
+
+                    return NotFound();
+                }
+
+                var contacttype = await _context.ContactTypes.FirstOrDefaultAsync(u => u.Id == contactdto.ContactTypeId);
+
+                if (contacttype == null)
+                {
+
+                    return NotFound();
+                }
+
+                return CreatedAtAction(nameof(GetContact), new { id = contact.Id });
             }
-            return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
 
+
+            return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
         }
 
         // DELETE: api/Kontakts/5
