@@ -42,17 +42,18 @@ namespace TARpe19TodoApp.Controllers
 
         // GET: api/Kasutajas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<GetUserResponse>> GetUser(int id)
         {
-            var user = await _context.Users
+            var user = await _context.Users.Include(u => u.Contacts).ThenInclude(c => c.ContactType)
                 .FirstOrDefaultAsync(u=>u.Id==id);
+            
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return ConvertToDto(user);
         }
 
         // PUT: api/Kasutajas/5
