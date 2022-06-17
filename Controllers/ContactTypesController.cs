@@ -88,13 +88,15 @@ namespace TARpe19TodoApp.Controllers
         {
             if (ModelState.IsValid){
 
-                var contactTypeResponse = new ContactTypeResponse();
+                var contactType = new ContactType();
+                contactType.Type = contactTypeRequest.Type;
 
 
-                _context.ContactTypes.Add(contactTypeResponse);
+
+                _context.ContactTypes.Add(contactType);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetContactType), new { id = contactTypeResponse.Type }, contactTypeResponse);
+                return CreatedAtAction(nameof(GetContactType), new { id = contactType.Id });
             }
             return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
         }
