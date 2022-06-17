@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TARpe19TodoApp.Data;
 using TARpe19TodoApp.Models;
+using TARpe19TodoApp.Models.Dto.Requests;
+using TARpe19TodoApp.Models.Dto.Response;
 
 namespace TARpe19TodoApp.Controllers
 {
@@ -82,13 +84,17 @@ namespace TARpe19TodoApp.Controllers
         // POST: api/KontaktiTüüp
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ContactType>> PostContactType(ContactType contactType)
+        public async Task<ActionResult<ContactTypeResponse>> PostContactType(ContactTypeRequest contactTypeRequest)
         {
-            if (ModelState.IsValid){ 
-                _context.ContactTypes.Add(contactType);
+            if (ModelState.IsValid){
+
+                var contactTypeResponse = new ContactTypeResponse();
+
+
+                _context.ContactTypes.Add(contactTypeResponse);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetContactType", new { id = contactType.Id }, contactType);
+                return CreatedAtAction(nameof(GetContactType), new { id = contactTypeResponse.Type }, contactTypeResponse);
             }
             return new JsonResult("Somethign Went wrong") { StatusCode = 500 };
         }
